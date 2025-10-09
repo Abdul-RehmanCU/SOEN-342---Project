@@ -1,22 +1,28 @@
 from datetime import datetime, timedelta
 import re
 class TrainConnection:
-    def __init__(self, route_id, departure_city, arrival_city, departure_time, arrival_time,train_type, days, first_class, second_class):
+    def __init__(self, route_id, departure_city, arrival_city, departure_time, arrival_time, train_type, days_of_operation, first_class_rate, second_class_rate):
         self.route_id = route_id #private parameter (not made public)
-        self.departure = departure_city
-        self.arrival = arrival_city
+        self.departure_city = departure_city
+        self.arrival_city = arrival_city
         self.departure_time = departure_time
         self.arrival_time = arrival_time
         self.train_type = train_type
-        self.days = days
-        self.first_class = float(first_class)
-        self.second_class = float(second_class)
+        self.days_of_operation = days_of_operation
+        self.first_class_rate = float(first_class_rate)
+        self.second_class_rate = float(second_class_rate)
 
         
 
-    def calculate_duration(departure_time_str, arrival_time_str):
+    def calculate_duration(self, departure_time_str=None, arrival_time_str=None):
         """Calculates the difference in times and returns as HH:MM format"""
         
+        # Use instance attributes if no parameters provided
+        if departure_time_str is None:
+            departure_time_str = self.departure_time
+        if arrival_time_str is None:
+            arrival_time_str = self.arrival_time
+            
         extra_days = 0
 
         # Search for any extra days in the string

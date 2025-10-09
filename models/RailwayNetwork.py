@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 from datetime import datetime, timedelta
-from TrainConnection import TrainConnection
+from .TrainConnection import TrainConnection
 
 class RailwayNetwork:
     MIN_TRANSFER = timedelta(minutes=15)
@@ -136,7 +136,7 @@ class RailwayNetwork:
             dt_c1_arrival = self._get_datetime(c1.arrival_time, dt_c1_departure)
 
             for c2 in self.connections:
-                if c2.departure_city.lower() != c1.arrival.lower():
+                if c2.departure_city.lower() != c1.arrival_city.lower():
                     continue
                 dt_c2_departure = self._get_datetime(c2.departure_time, dt_c1_arrival)
                 dt_c2_arrival = self._get_datetime(c2.arrival_time, dt_c2_departure)
@@ -145,9 +145,9 @@ class RailwayNetwork:
                     continue  # infeasible transfer
 
                 for c3 in self.connections:
-                    if c3.departure_city.lower() != c2.arrival.lower():
+                    if c3.departure_city.lower() != c2.arrival_city.lower():
                         continue
-                    if c3.arrival.lower() != arrival_city.lower():
+                    if c3.arrival_city.lower() != arrival_city.lower():
                         continue
                     dt_c3_departure = self._get_datetime(c3.departure_time, dt_c2_arrival)
                     dt_c3_arrival = self._get_datetime(c3.arrival_time, dt_c3_departure)
@@ -166,5 +166,23 @@ class RailwayNetwork:
         }
 
     def sort_results(self, results, key='duration'):
-        # Sort results by duration or price
-        pass
+        """Sort results by duration or price"""
+        if key == 'duration':
+            # Sort direct connections by duration
+            results['direct'].sort(key=lambda x: self._get_duration_minutes(x))
+            # Sort indirect connections by total duration
+            results['one_stop'].sort(key=lambda x: x['total_duration'])
+            results['two_stop'].sort(key=lambda x: x['total_duration'])
+        elif key == 'price_first':
+            # Sort by first class price
+            results['direct'].sort(key=lambda x: x.first_class_rate)
+        elif key == 'price_second':
+            # Sort by second class price
+            results['direct'].sort(key=lambda x: x.second_class_rate)
+        return results
+    
+    def _get_duration_minutes(self, connection):
+        """Helper method to get duration in minutes for sorting"""
+        duration_str = connection.calculate_duration()
+        hours, minutes = map(int, duration_str.split(':'))
+        return hours * 60 + minutes
