@@ -1,353 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Results - European Railway Network</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="../static/styles.css" />
     <style>
-        .results-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .results-header {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
-        
-        .search-summary {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .results-section {
-            background: white;
-            margin-bottom: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .section-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .section-content {
-            padding: 0;
-        }
-        
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .results-table th {
-            background: #f8f9fa;
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #333;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        
-        .results-table td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #e0e0e0;
-            vertical-align: top;
-        }
-        
-        .results-table tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .route-info {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .time-info {
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-        }
-        
-        .duration-badge {
-            background: #667eea;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .price-info {
-            font-weight: 600;
-        }
-        
-        .first-class {
-            color: #d4af37;
-        }
-        
-        .second-class {
-            color: #666;
-        }
-        
-        .train-type {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .days-info {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        
-        .no-results-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-        
-        .action-buttons {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 0 10px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #f8f9fa;
-            color: #333;
-            border: 2px solid #e0e0e0;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .connection-path {
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 14px;
-        }
-        
-        .transfer-info {
-            background: #fff3cd;
-            color: #856404;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin: 5px 0;
-            font-size: 12px;
-            border-left: 4px solid #ffc107;
-        }
-        
-        .total-duration {
-            font-weight: 600;
-            color: #667eea;
-        }
+      .results-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .results-header {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+      }
+
+      .search-summary {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .results-section {
+        background: white;
+        margin-bottom: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .section-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .section-content {
+        padding: 0;
+      }
+
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .results-table th {
+        background: #f8f9fa;
+        padding: 15px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .results-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: top;
+      }
+
+      .results-table tr:hover {
+        background: #f8f9fa;
+      }
+
+      .route-info {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .time-info {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+      }
+
+      .duration-badge {
+        background: #667eea;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .price-info {
+        font-weight: 600;
+      }
+
+      .first-class {
+        color: #d4af37;
+      }
+
+      .second-class {
+        color: #666;
+      }
+
+      .train-type {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .days-info {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .no-results-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+
+      .action-buttons {
+        text-align: center;
+        margin: 30px 0;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        margin: 0 10px;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 2px solid #e0e0e0;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .connection-path {
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-size: 14px;
+      }
+
+      .transfer-info {
+        background: #fff3cd;
+        color: #856404;
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin: 5px 0;
+        font-size: 12px;
+        border-left: 4px solid #ffc107;
+      }
+
+      .total-duration {
+        font-weight: 600;
+        color: #667eea;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="results-container">
-        <div class="results-header">
-            <div class="logo">🚄</div>
-            <h1>Search Results</h1>
-            
-            <div class="search-summary">
-                <strong>Search Parameters:</strong>
-                {% if search_params.departure_city %}From: {{ search_params.departure_city }}{% endif %}
-                {% if search_params.arrival_city %} → To: {{ search_params.arrival_city }}{% endif %}
-                {% if search_params.train_type %} | Train Type: {{ search_params.train_type }}{% endif %}
-                {% if search_params.days_of_operation %} | Days: {{ search_params.days_of_operation }}{% endif %}
-                | Sorted by: {{ sort_by.replace('_', ' ').title() }}
-            </div>
-        </div>
+      <div class="results-header">
+        <h1>Search Results</h1>
 
-        <!-- Direct Connections -->
-        <div class="results-section">
-            <div class="section-header">
-                🚅 Direct Connections ({{ results.direct|length }})
-            </div>
-            <div class="section-content">
-                {% if results.direct %}
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Route</th>
-                            <th>Departure Time</th>
-                            <th>Arrival Time</th>
-                            <th>Duration</th>
-                            <th>Train Type</th>
-                            <th>Days</th>
-                            <th>First Class</th>
-                            <th>Second Class</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for connection in results.direct %}
-                        <tr>
-                            <td class="route-info">{{ connection.departure_city }} → {{ connection.arrival_city }}</td>
-                            <td class="time-info">{{ connection.departure_time }}</td>
-                            <td class="time-info">{{ connection.arrival_time }}</td>
-                            <td><span class="duration-badge">{{ connection.calculate_duration() }}</span></td>
-                            <td><span class="train-type">{{ connection.train_type }}</span></td>
-                            <td class="days-info">{{ connection.days_of_operation }}</td>
-                            <td class="price-info first-class">€{{ "%.2f"|format(connection.first_class_rate) }}</td>
-                            <td class="price-info second-class">€{{ "%.2f"|format(connection.second_class_rate) }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div class="no-results">
-                    <div class="no-results-icon">🚫</div>
-                    <h3>No Direct Connections Found</h3>
-                    <p>Try searching for indirect connections below.</p>
-                </div>
-                {% endif %}
-            </div>
+        <div class="search-summary">
+          <strong>Search Parameters:</strong>
+          {% if search_params.departure_city %}From: {{
+          search_params.departure_city }}{% endif %} {% if
+          search_params.arrival_city %} → To: {{ search_params.arrival_city }}{%
+          endif %} {% if search_params.train_type %} | Train Type: {{
+          search_params.train_type }}{% endif %} {% if
+          search_params.days_of_operation %} | Days: {{
+          search_params.days_of_operation }}{% endif %} | Sorted by: {{
+          sort_by.replace('_', ' ').title() }}
         </div>
+      </div>
 
-        <!-- 1-Stop Connections -->
-        <div class="results-section">
-            <div class="section-header">
-                🔄 1-Stop Connections ({{ results.one_stop|length }})
-            </div>
-            <div class="section-content">
-                {% if results.one_stop %}
-                {% for connection in results.one_stop %}
-                <div class="connection-path">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <strong>{{ connection.connections[0].departure_city }} → {{ connection.connections[1].arrival_city }}</strong>
-                        <span class="total-duration">Total Duration: {{ "%.0f"|format(connection.total_duration.total_seconds() / 3600) }}h {{ "%.0f"|format((connection.total_duration.total_seconds() % 3600) / 60) }}m</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <strong>Leg 1:</strong> {{ connection.connections[0].departure_city }} → {{ connection.connections[0].arrival_city }}<br>
-                            <span class="time-info">{{ connection.connections[0].departure_time }} - {{ connection.connections[0].arrival_time }}</span><br>
-                            <span class="train-type">{{ connection.connections[0].train_type }}</span> | 
-                            <span class="days-info">{{ connection.connections[0].days_of_operation }}</span>
-                        </div>
-                        <div>
-                            <strong>Leg 2:</strong> {{ connection.connections[1].departure_city }} → {{ connection.connections[1].arrival_city }}<br>
-                            <span class="time-info">{{ connection.connections[1].departure_time }} - {{ connection.connections[1].arrival_time }}</span><br>
-                            <span class="train-type">{{ connection.connections[1].train_type }}</span> | 
-                            <span class="days-info">{{ connection.connections[1].days_of_operation }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="transfer-info">
-                        ⏱️ Transfer time: 15 minutes minimum at {{ connection.connections[0].arrival_city }}
-                    </div>
-                    
-                    <div style="margin-top: 10px;">
-                        <strong>Pricing:</strong> 
-                        First Class: €{{ "%.2f"|format(connection.connections[0].first_class_rate + connection.connections[1].first_class_rate) }} | 
-                        Second Class: €{{ "%.2f"|format(connection.connections[0].second_class_rate + connection.connections[1].second_class_rate) }}
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="no-results">
-                    <div class="no-results-icon">🚫</div>
-                    <h3>No 1-Stop Connections Found</h3>
-                </div>
-                {% endif %}
-            </div>
+      <!-- Direct Connections -->
+      <div class="results-section">
+        <div class="section-header">
+          🚅 Direct Connections ({{ results.direct|length }})
         </div>
+        <div class="section-content">
+          {% if results.direct %}
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Duration</th>
+                <th>Train Type</th>
+                <th>Days</th>
+                <th>First Class</th>
+                <th>Second Class</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for connection in results.direct %}
+              <tr>
+                <td class="route-info">
+                  {{ connection.departure_city }} → {{ connection.arrival_city
+                  }}
+                </td>
+                <td class="time-info">{{ connection.departure_time }}</td>
+                <td class="time-info">{{ connection.arrival_time }}</td>
+                <td>
+                  <span class="duration-badge"
+                    >{{ connection.calculate_duration() }}</span
+                  >
+                </td>
+                <td>
+                  <span class="train-type">{{ connection.train_type }}</span>
+                </td>
+                <td class="days-info">{{ connection.days_of_operation }}</td>
+                <td class="price-info first-class">
+                  €{{ "%.2f"|format(connection.first_class_rate) }}
+                </td>
+                <td class="price-info second-class">
+                  €{{ "%.2f"|format(connection.second_class_rate) }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="no-results">
+            <h3>No Direct Connections Found</h3>
+            <p>Try searching for indirect connections below.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
 
-        <!-- 2-Stop Connections -->
-        <div class="results-section">
-            <div class="section-header">
-                🔄🔄 2-Stop Connections ({{ results.two_stop|length }})
-            </div>
-            <div class="section-content">
-                {% if results.two_stop %}
-                {% for connection in results.two_stop %}
-                <div class="connection-path">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <strong>{{ connection.connections[0].departure_city }} → {{ connection.connections[2].arrival_city }}</strong>
-                        <span class="total-duration">Total Duration: {{ "%.0f"|format(connection.total_duration.total_seconds() / 3600) }}h {{ "%.0f"|format((connection.total_duration.total_seconds() % 3600) / 60) }}m</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                        <div>
-                            <strong>Leg 1:</strong> {{ connection.connections[0].departure_city }} → {{ connection.connections[0].arrival_city }}<br>
-                            <span class="time-info">{{ connection.connections[0].departure_time }} - {{ connection.connections[0].arrival_time }}</span><br>
-                            <span class="train-type">{{ connection.connections[0].train_type }}</span>
-                        </div>
-                        <div>
-                            <strong>Leg 2:</strong> {{ connection.connections[1].departure_city }} → {{ connection.connections[1].arrival_city }}<br>
-                            <span class="time-info">{{ connection.connections[1].departure_time }} - {{ connection.connections[1].arrival_time }}</span><br>
-                            <span class="train-type">{{ connection.connections[1].train_type }}</span>
-                        </div>
-                        <div>
-                            <strong>Leg 3:</strong> {{ connection.connections[2].departure_city }} → {{ connection.connections[2].arrival_city }}<br>
-                            <span class="time-info">{{ connection.connections[2].departure_time }} - {{ connection.connections[2].arrival_time }}</span><br>
-                            <span class="train-type">{{ connection.connections[2].train_type }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="transfer-info">
-                        ⏱️ Transfer times: 15 minutes minimum at {{ connection.connections[0].arrival_city }} and {{ connection.connections[1].arrival_city }}
-                    </div>
-                    
-                    <div style="margin-top: 10px;">
-                        <strong>Pricing:</strong> 
-                        First Class: €{{ "%.2f"|format(connection.connections[0].first_class_rate + connection.connections[1].first_class_rate + connection.connections[2].first_class_rate) }} | 
-                        Second Class: €{{ "%.2f"|format(connection.connections[0].second_class_rate + connection.connections[1].second_class_rate + connection.connections[2].second_class_rate) }}
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="no-results">
-                    <div class="no-results-icon">🚫</div>
-                    <h3>No 2-Stop Connections Found</h3>
-                </div>
-                {% endif %}
-            </div>
+      <!-- 1-Stop Connections -->
+      <div class="results-section">
+        <div class="section-header">
+          🔄 1-Stop Connections ({{ results.one_stop|length }})
         </div>
+        <div class="section-content">
+          {% if results.one_stop %} {% for connection in results.one_stop %}
+          <div class="connection-path">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+              ">
+              <strong
+                >{{ connection.connections[0].departure_city }} → {{
+                connection.connections[1].arrival_city }}</strong
+              >
+              <span class="total-duration"
+                >Total Duration: {{
+                "%.0f"|format(connection.total_duration.total_seconds() / 3600)
+                }}h {{ "%.0f"|format((connection.total_duration.total_seconds()
+                % 3600) / 60) }}m</span
+              >
+            </div>
 
-        <div class="action-buttons">
-            <a href="{{ url_for('search') }}" class="btn btn-primary">🔍 New Search</a>
-            <a href="{{ url_for('index') }}" class="btn btn-secondary">🏠 Back to Home</a>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+              <div>
+                <strong>Leg 1:</strong> {{
+                connection.connections[0].departure_city }} → {{
+                connection.connections[0].arrival_city }}<br />
+                <span class="time-info"
+                  >{{ connection.connections[0].departure_time }} - {{
+                  connection.connections[0].arrival_time }}</span
+                ><br />
+                <span class="train-type"
+                  >{{ connection.connections[0].train_type }}</span
+                >
+                |
+                <span class="days-info"
+                  >{{ connection.connections[0].days_of_operation }}</span
+                >
+              </div>
+              <div>
+                <strong>Leg 2:</strong> {{
+                connection.connections[1].departure_city }} → {{
+                connection.connections[1].arrival_city }}<br />
+                <span class="time-info"
+                  >{{ connection.connections[1].departure_time }} - {{
+                  connection.connections[1].arrival_time }}</span
+                ><br />
+                <span class="train-type"
+                  >{{ connection.connections[1].train_type }}</span
+                >
+                |
+                <span class="days-info"
+                  >{{ connection.connections[1].days_of_operation }}</span
+                >
+              </div>
+            </div>
+
+            <div class="transfer-info">
+              ⏱️ Transfer time: 15 minutes minimum at {{
+              connection.connections[0].arrival_city }}
+            </div>
+
+            <div style="margin-top: 10px">
+              <strong>Pricing:</strong>
+              First Class: €{{
+              "%.2f"|format(connection.connections[0].first_class_rate +
+              connection.connections[1].first_class_rate) }} | Second Class: €{{
+              "%.2f"|format(connection.connections[0].second_class_rate +
+              connection.connections[1].second_class_rate) }}
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="no-results">
+            <h3>No 1-Stop Connections Found</h3>
+          </div>
+          {% endif %}
         </div>
+      </div>
+
+      <!-- 2-Stop Connections -->
+      <div class="results-section">
+        <div class="section-header">
+          🔄🔄 2-Stop Connections ({{ results.two_stop|length }})
+        </div>
+        <div class="section-content">
+          {% if results.two_stop %} {% for connection in results.two_stop %}
+          <div class="connection-path">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+              ">
+              <strong
+                >{{ connection.connections[0].departure_city }} → {{
+                connection.connections[2].arrival_city }}</strong
+              >
+              <span class="total-duration"
+                >Total Duration: {{
+                "%.0f"|format(connection.total_duration.total_seconds() / 3600)
+                }}h {{ "%.0f"|format((connection.total_duration.total_seconds()
+                % 3600) / 60) }}m</span
+              >
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 15px;
+              ">
+              <div>
+                <strong>Leg 1:</strong> {{
+                connection.connections[0].departure_city }} → {{
+                connection.connections[0].arrival_city }}<br />
+                <span class="time-info"
+                  >{{ connection.connections[0].departure_time }} - {{
+                  connection.connections[0].arrival_time }}</span
+                ><br />
+                <span class="train-type"
+                  >{{ connection.connections[0].train_type }}</span
+                >
+              </div>
+              <div>
+                <strong>Leg 2:</strong> {{
+                connection.connections[1].departure_city }} → {{
+                connection.connections[1].arrival_city }}<br />
+                <span class="time-info"
+                  >{{ connection.connections[1].departure_time }} - {{
+                  connection.connections[1].arrival_time }}</span
+                ><br />
+                <span class="train-type"
+                  >{{ connection.connections[1].train_type }}</span
+                >
+              </div>
+              <div>
+                <strong>Leg 3:</strong> {{
+                connection.connections[2].departure_city }} → {{
+                connection.connections[2].arrival_city }}<br />
+                <span class="time-info"
+                  >{{ connection.connections[2].departure_time }} - {{
+                  connection.connections[2].arrival_time }}</span
+                ><br />
+                <span class="train-type"
+                  >{{ connection.connections[2].train_type }}</span
+                >
+              </div>
+            </div>
+
+            <div class="transfer-info">
+              ⏱️ Transfer times: 15 minutes minimum at {{
+              connection.connections[0].arrival_city }} and {{
+              connection.connections[1].arrival_city }}
+            </div>
+
+            <div style="margin-top: 10px">
+              <strong>Pricing:</strong>
+              First Class: €{{
+              "%.2f"|format(connection.connections[0].first_class_rate +
+              connection.connections[1].first_class_rate +
+              connection.connections[2].first_class_rate) }} | Second Class: €{{
+              "%.2f"|format(connection.connections[0].second_class_rate +
+              connection.connections[1].second_class_rate +
+              connection.connections[2].second_class_rate) }}
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <div class="no-results">
+            <h3>No 2-Stop Connections Found</h3>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="{{ url_for('search') }}" class="btn btn-primary">New Search</a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary"
+          >Back to Home</a
+        >
+      </div>
     </div>
-</body>
+  </body>
 </html>

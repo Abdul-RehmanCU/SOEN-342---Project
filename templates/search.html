@@ -1,201 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Train Connections - European Railway Network</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}" />
     <style>
-        .search-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .search-form {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .search-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        
-        .search-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c62828;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        .search-tips {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-        
-        .search-tips h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .search-tips ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        
-        .search-tips li {
-            margin-bottom: 8px;
-            color: #666;
-        }
+      .search-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .search-form {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .search-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+      }
+
+      .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #c62828;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .back-link:hover {
+        text-decoration: underline;
+      }
+
+      .search-tips {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      .search-tips h3 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .search-tips ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .search-tips li {
+        margin-bottom: 8px;
+        color: #666;
+      }
     </style>
-</head>
-<body>
-    <div class="search-container">
-        <div class="logo">🚄</div>
-        <h1>Search Train Connections</h1>
-        <p class="subtitle">Find your perfect journey across Europe</p>
-        
-        {% if error %}
-        <div class="error-message">
-            {{ error }}
-        </div>
-        {% endif %}
-        
-        <div class="search-form">
-            <form method="POST" action="{{ url_for('search') }}">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="departure_city">Departure City *</label>
-                        <input type="text" id="departure_city" name="departure_city" 
-                               placeholder="e.g., Paris, London, Berlin" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="arrival_city">Arrival City *</label>
-                        <input type="text" id="arrival_city" name="arrival_city" 
-                               placeholder="e.g., Rome, Madrid, Amsterdam" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="train_type">Train Type</label>
-                        <select id="train_type" name="train_type">
-                            <option value="">Any Train Type</option>
-                            <option value="TGV">TGV</option>
-                            <option value="ICE">ICE</option>
-                            <option value="EuroCity">EuroCity</option>
-                            <option value="InterCity">InterCity</option>
-                            <option value="RegioExpress">RegioExpress</option>
-                            <option value="Frecciarossa">Frecciarossa</option>
-                            <option value="RJX">RJX</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="days_of_operation">Days of Operation</label>
-                        <select id="days_of_operation" name="days_of_operation">
-                            <option value="">Any Day</option>
-                            <option value="Daily">Daily</option>
-                            <option value="Mon-Fri">Monday-Friday</option>
-                            <option value="Weekend">Weekend</option>
-                            <option value="Mon,Wed,Fri">Mon, Wed, Fri</option>
-                            <option value="Tue,Thu">Tue, Thu</option>
-                            <option value="Sat-Sun">Saturday-Sunday</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="sort_by">Sort Results By</label>
-                    <select id="sort_by" name="sort_by">
-                        <option value="duration">Trip Duration (Fastest First)</option>
-                        <option value="price_first">First Class Price (Lowest First)</option>
-                        <option value="price_second">Second Class Price (Lowest First)</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="search-button">🔍 Search Connections</button>
-            </form>
-        </div>
-        
-        <div class="search-tips">
-            <h3>💡 Search Tips</h3>
-            <ul>
-                <li>Enter city names exactly as they appear in the database</li>
-                <li>Try different train types to see all available options</li>
-                <li>Use "Any Day" to see all available schedules</li>
-                <li>Sort by duration to find the fastest routes</li>
-                <li>Sort by price to find the most economical options</li>
-                <li>The system will show direct and indirect connections (up to 2 stops)</li>
-            </ul>
-        </div>
-        
-        <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+  </head>
+  <body>
+    <div class="search-container" back>
+      <h1>Search Train Connections</h1>
+      <p class="subtitle">Find your perfect journey across Europe</p>
+
+      {% if error %}
+      <div class="error-message">{{ error }}</div>
+      {% endif %}
+
+      <div class="search-form">
+        <form method="POST" action="{{ url_for('search') }}">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="departure_city">Departure City *</label>
+              <input
+                type="text"
+                id="departure_city"
+                name="departure_city"
+                placeholder="e.g., Paris, London, Berlin"
+                required />
+            </div>
+            <div class="form-group">
+              <label for="arrival_city">Arrival City *</label>
+              <input
+                type="text"
+                id="arrival_city"
+                name="arrival_city"
+                placeholder="e.g., Rome, Madrid, Amsterdam"
+                required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="train_type">Train Type</label>
+              <select id="train_type" name="train_type">
+                <option value="">Any Train Type</option>
+                <option value="TGV">TGV</option>
+                <option value="ICE">ICE</option>
+                <option value="EuroCity">EuroCity</option>
+                <option value="InterCity">InterCity</option>
+                <option value="RegioExpress">RegioExpress</option>
+                <option value="Frecciarossa">Frecciarossa</option>
+                <option value="RJX">RJX</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="days_of_operation">Days of Operation</label>
+              <select id="days_of_operation" name="days_of_operation">
+                <option value="">Any Day</option>
+                <option value="Daily">Daily</option>
+                <option value="Mon-Fri">Monday-Friday</option>
+                <option value="Weekend">Weekend</option>
+                <option value="Mon,Wed,Fri">Mon, Wed, Fri</option>
+                <option value="Tue,Thu">Tue, Thu</option>
+                <option value="Sat-Sun">Saturday-Sunday</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sort_by">Sort Results By</label>
+            <select id="sort_by" name="sort_by">
+              <option value="duration">Trip Duration (Fastest First)</option>
+              <option value="price_first">
+                First Class Price (Lowest First)
+              </option>
+              <option value="price_second">
+                Second Class Price (Lowest First)
+              </option>
+            </select>
+          </div>
+
+          <button type="submit" class="search-button">
+            🔍 Search Connections
+          </button>
+        </form>
+      </div>
+
+      <div class="search-tips">
+        <h3>Search Tips</h3>
+        <ul>
+          <li>Enter city names exactly as they appear in the database</li>
+          <li>Try different train types to see all available options</li>
+          <li>Use "Any Day" to see all available schedules</li>
+          <li>Sort by duration to find the fastest routes</li>
+          <li>Sort by price to find the most economical options</li>
+          <li>
+            The system will show direct and indirect connections (up to 2 stops)
+          </li>
+        </ul>
+      </div>
+
+      <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
     </div>
-</body>
+  </body>
 </html>
