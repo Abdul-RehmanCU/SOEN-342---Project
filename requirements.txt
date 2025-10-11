@@ -1,0 +1,5 @@
+Flask==3.1.2
+pandas==2.3.3
+numpy==2.2.6
+flask-sqlalchemy==3.1.1
+flask-scss==0.5

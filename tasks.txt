@@ -1,0 +1,50 @@
+1. Project Setup
+ Create a new Python virtual environment (venv)
+ Install required packages: Flask, pandas, numpy, etc.
+ Set up a basic Flask app structure:
+app.py (main Flask application)
+templates/ (HTML templates if using web interface)
+static/ (CSS/JS if needed)
+data/ (store CSV file)
+
+
+2. Data Handling
+ Load the CSV file into memory using pandas
+ Define a TrainConnection class (OOP structure) with attributes:
+route_id, departure_city, arrival_city, departure_time, arrival_time, train_type, days_of_operation, first_class_rate, second_class_rate
+ Calculate trip duration for each connection (arrival_time - departure_time)
+
+
+3. Core Logic / Search
+ Implement search functionality:
+Allow search by any parameter except route_id
+Filter matches based on query parameters
+ Implement sorting functionality:
+Sort results by trip duration
+Sort results by price (first class or second class)
+
+
+4. Indirect Connections
+ Implement logic to find 1-stop connections:
+Identify possible intermediate cities
+Sum trip durations + add time to change connection (e.g., 15–30 min default)
+ Implement logic for 2-stop connections (same approach, longer path)
+ Include indirect connections in search results
+
+
+5. Flask API / Web Interface
+ Create Flask routes:
+/ → Home page with search form
+/search → Display search results in table format
+ Display for each connection:
+All connection details (city, time, train type, class rates)
+Trip duration
+Connection change time (for indirect trips)
+ Allow user to sort displayed results via UI
+
+
+6. Testing / Validation
+ Write test CSVs with sample data (direct + indirect connections)
+ Test search with all types of parameters
+ Verify duration calculations for direct and indirect trips
+ Verify sorting works correctly for both duration and price
