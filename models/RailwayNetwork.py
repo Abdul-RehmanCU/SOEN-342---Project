@@ -94,13 +94,11 @@ class RailwayNetwork:
         MIN_TRANSFER = timedelta(minutes=15)  # minimum time to change trains
 
 
-        
         #this is for the direct connections
         direct = [c for c in self.connections
               if c.departure_city.lower() == departure_city.lower() and
                  c.arrival_city.lower() == arrival_city.lower()]
         direct = self.filter_connections(direct, **kwargs)
-        
 
         #this is for the indirect connections(1 stop)
         one_stop =[]
