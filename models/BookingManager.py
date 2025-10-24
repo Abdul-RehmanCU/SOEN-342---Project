@@ -3,14 +3,13 @@ from .Reservation import Reservation
 from .Trip import Trip
 
 class BookingManager:
-    """Manages trip bookings and maintains records of all clients and trips"""
     
     def __init__(self):
         self.clients = {}  # client_id -> Client object
         self.trips = []    # List of all trips
         
     def get_or_create_client(self, first_name, last_name, age, client_id):
-        """Gets existing client or creates a new one"""
+        "Gets existing client or creates a new one"
         if client_id in self.clients:
             # Update client info if it exists
             client = self.clients[client_id]
@@ -64,7 +63,7 @@ class BookingManager:
         return trip
     
     def _has_existing_reservation(self, client_id, connection):
-        """Checks if a client already has a reservation for a given connection"""
+        "Checks if a client already has a reservation for a given connection"
         for trip in self.trips:
             for reservation in trip.reservations:
                 if (reservation.client.client_id == client_id and 
@@ -99,15 +98,15 @@ class BookingManager:
         }
     
     def get_all_clients(self):
-        """Returns all registered clients"""
+        "Returns all registered clients"
         return list(self.clients.values())
     
     def get_all_trips(self):
-        """Returns all trips"""
+        "Returns all trips"
         return self.trips
     
     def get_trip_by_id(self, trip_id):
-        """Finds a trip by its ID"""
+        "Finds a trip by its ID"
         for trip in self.trips:
             if trip.trip_id == trip_id:
                 return trip

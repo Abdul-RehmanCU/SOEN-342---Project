@@ -1,7 +1,6 @@
 from .Ticket import Ticket
 
 class Reservation:
-    """Represents a reservation linking a client to a connection, documented by a ticket"""
     
     def __init__(self, client, connection):
         self.client = client
@@ -9,7 +8,7 @@ class Reservation:
         self.ticket = Ticket(self)
         
     def get_reservation_info(self):
-        """Returns formatted reservation information"""
+        "Returns formatted reservation information"
         return {
             'client': self.client,
             'connection': self.connection,

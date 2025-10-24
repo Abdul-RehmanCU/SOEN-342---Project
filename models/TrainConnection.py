@@ -15,7 +15,7 @@ class TrainConnection:
         
 
     def calculate_duration(self, departure_time_str=None, arrival_time_str=None):
-        """Calculates the difference in times and returns as HH:MM format"""
+        "Calculates the difference in times and returns as HH:MM format"
         
         # Use instance attributes if no parameters provided
         if departure_time_str is None:

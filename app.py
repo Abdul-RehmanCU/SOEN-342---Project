@@ -2,11 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import json
 import os
 
+# Set a secret key for sessions and flash messages
+SECRET_KEY = os.environ.get('SECRET_KEY', 'key')
+
 from models.RailwayNetwork import RailwayNetwork
 from models.BookingManager import BookingManager
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Required for sessions and flash messages
+app.secret_key = SECRET_KEY  # Required for sessions and flash messages
 
 # Initialize railway network and booking manager
 network = RailwayNetwork()
@@ -60,7 +63,7 @@ def upload():
 
 @app.route("/book/<route_id>", methods=['GET', 'POST'])
 def book_trip(route_id):
-    """Handle trip booking for a specific route"""
+    "Handle trip booking for a specific route"
     # Find the connection by route_id
     connection = None
     for conn in network.connections:
@@ -115,7 +118,7 @@ def book_trip(route_id):
 
 @app.route("/booking_confirmation/<trip_id>")
 def booking_confirmation(trip_id):
-    """Show booking confirmation details"""
+    "Show booking confirmation details"
     trip = booking_manager.get_trip_by_id(trip_id)
     if not trip:
         flash("Trip not found", "error")
@@ -125,7 +128,7 @@ def booking_confirmation(trip_id):
 
 @app.route("/view_trips", methods=['GET', 'POST'])
 def view_trips():
-    """Allow clients to view their trips by last name and ID"""
+    "Allow clients to view their trips by last name and ID"
     if request.method == 'POST':
         last_name = request.form.get('last_name', '').strip()
         client_id = request.form.get('client_id', '').strip()
