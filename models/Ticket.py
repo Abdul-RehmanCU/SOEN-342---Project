@@ -1,6 +1,5 @@
 class Ticket:
-    """Represents a ticket that documents a reservation with a unique numerical ID"""
-    
+
     _next_ticket_id = 100000  # Start ticket IDs at 100000
     
     def __init__(self, reservation):
@@ -9,7 +8,7 @@ class Ticket:
         self.reservation = reservation
         
     def get_ticket_info(self):
-        """Returns formatted ticket information"""
+        "Returns formatted ticket information"
         return {
             'ticket_id': self.ticket_id,
             'client_name': self.reservation.client.get_full_name(),

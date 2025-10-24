@@ -4,7 +4,6 @@ from datetime import datetime
 from .Reservation import Reservation
 
 class Trip:
-    """Represents a trip holding one or more reservations with a unique alphanumeric ID"""
     
     def __init__(self, reservations=None):
         self.trip_id = self._generate_trip_id()
@@ -12,7 +11,7 @@ class Trip:
         self.booking_date = datetime.now()
         
     def _generate_trip_id(self):
-        """Generates a unique alphanumeric trip ID (e.g., TR8K3M9L)"""
+        "Generates a unique alphanumeric trip ID (e.g., TR8K3M9L)"
         letters = string.ascii_uppercase
         digits = string.digits
         # Generate 8-character ID starting with TR
@@ -20,25 +19,25 @@ class Trip:
         return id_chars
     
     def add_reservation(self, reservation):
-        """Adds a reservation to this trip"""
+        "Adds a reservation to this trip"
         self.reservations.append(reservation)
     
     def get_connection(self):
-        """Returns the connection for this trip (assumes all reservations are for the same connection)"""
+        "Returns the connection for this trip (assumes all reservations are for the same connection)"
         if self.reservations:
             return self.reservations[0].connection
         return None
     
     def get_total_passengers(self):
-        """Returns the number of passengers on this trip"""
+        "Returns the number of passengers on this trip"
         return len(self.reservations)
     
     def get_passenger_names(self):
-        """Returns a list of all passenger names on this trip"""
+        "Returns a list of all passenger names on this trip"
         return [reservation.client.get_full_name() for reservation in self.reservations]
     
     def is_current_or_future(self):
-        """Checks if this trip is for today or a future date"""
+        "Checks if this trip is for today or a future date"
         connection = self.get_connection()
         if not connection:
             return False
@@ -48,7 +47,7 @@ class Trip:
         return True
     
     def get_trip_summary(self):
-        """Returns a summary of the trip information"""
+        "Returns a summary of the trip information"
         connection = self.get_connection()
         if not connection:
             return {}
