@@ -158,13 +158,6 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
 
-      .btn-small {
-        padding: 8px 15px;
-        font-size: 14px;
-        border-radius: 15px;
-        margin: 0;
-      }
-
       .connection-path {
         background: #f0f0f0;
         padding: 10px;
@@ -225,7 +218,6 @@
                 <th>Days</th>
                 <th>First Class</th>
                 <th>Second Class</th>
-                <th>Book Trip</th>
               </tr>
             </thead>
             <tbody>
@@ -251,13 +243,6 @@
                 </td>
                 <td class="price-info second-class">
                   €{{ "%.2f"|format(connection.second_class_rate) }}
-                </td>
-                <td>
-                  <a
-                    href="{{ url_for('book_trip', route_id=connection.route_id) }}"
-                    class="btn btn-primary btn-small"
-                    >Book Now</a
-                  >
                 </td>
               </tr>
               {% endfor %}
@@ -340,33 +325,13 @@
               connection.connections[0].arrival_city }}
             </div>
 
-            <div
-              style="
-                margin-top: 10px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              ">
-              <div>
-                <strong>Pricing:</strong>
-                First Class: €{{
-                "%.2f"|format(connection.connections[0].first_class_rate +
-                connection.connections[1].first_class_rate) }} | Second Class:
-                €{{ "%.2f"|format(connection.connections[0].second_class_rate +
-                connection.connections[1].second_class_rate) }}
-              </div>
-              <div>
-                <a
-                  href="{{ url_for('book_trip', route_id=connection.connections[0].route_id) }}"
-                  class="btn btn-primary btn-small"
-                  >Book First Leg</a
-                >
-                <a
-                  href="{{ url_for('book_trip', route_id=connection.connections[1].route_id) }}"
-                  class="btn btn-secondary btn-small"
-                  >Book Second Leg</a
-                >
-              </div>
+            <div style="margin-top: 10px">
+              <strong>Pricing:</strong>
+              First Class: €{{
+              "%.2f"|format(connection.connections[0].first_class_rate +
+              connection.connections[1].first_class_rate) }} | Second Class: €{{
+              "%.2f"|format(connection.connections[0].second_class_rate +
+              connection.connections[1].second_class_rate) }}
             </div>
           </div>
           {% endfor %} {% else %}
@@ -454,40 +419,15 @@
               connection.connections[1].arrival_city }}
             </div>
 
-            <div
-              style="
-                margin-top: 10px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              ">
-              <div>
-                <strong>Pricing:</strong>
-                First Class: €{{
-                "%.2f"|format(connection.connections[0].first_class_rate +
-                connection.connections[1].first_class_rate +
-                connection.connections[2].first_class_rate) }} | Second Class:
-                €{{ "%.2f"|format(connection.connections[0].second_class_rate +
-                connection.connections[1].second_class_rate +
-                connection.connections[2].second_class_rate) }}
-              </div>
-              <div>
-                <a
-                  href="{{ url_for('book_trip', route_id=connection.connections[0].route_id) }}"
-                  class="btn btn-primary btn-small"
-                  >Book Leg 1</a
-                >
-                <a
-                  href="{{ url_for('book_trip', route_id=connection.connections[1].route_id) }}"
-                  class="btn btn-secondary btn-small"
-                  >Book Leg 2</a
-                >
-                <a
-                  href="{{ url_for('book_trip', route_id=connection.connections[2].route_id) }}"
-                  class="btn btn-secondary btn-small"
-                  >Book Leg 3</a
-                >
-              </div>
+            <div style="margin-top: 10px">
+              <strong>Pricing:</strong>
+              First Class: €{{
+              "%.2f"|format(connection.connections[0].first_class_rate +
+              connection.connections[1].first_class_rate +
+              connection.connections[2].first_class_rate) }} | Second Class: €{{
+              "%.2f"|format(connection.connections[0].second_class_rate +
+              connection.connections[1].second_class_rate +
+              connection.connections[2].second_class_rate) }}
             </div>
           </div>
           {% endfor %} {% else %}
