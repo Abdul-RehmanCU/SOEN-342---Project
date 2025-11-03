@@ -7,15 +7,19 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'key')
 
 from models.RailwayNetwork import RailwayNetwork
 from models.BookingManager import BookingManager
+from models.DatabaseManager import DatabaseManager
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY  # Required for sessions and flash messages
 
-# Initialize railway network and booking manager
+# Initialize database manager
+db_manager = DatabaseManager()
+
+# Initialize railway network and booking manager with database persistence
 network = RailwayNetwork()
-booking_manager = BookingManager()
+booking_manager = BookingManager(db_manager)
 csv_path = os.path.join('data', 'eu_rail_network.csv')
-network.load_from_csv(csv_path)
+network.load_from_csv(csv_path, db_manager)
 
 #homepage
 @app.route("/")

@@ -1,10 +1,14 @@
 class Ticket:
 
-    _next_ticket_id = 100000  # Start ticket IDs at 100000
-    
-    def __init__(self, reservation):
-        self.ticket_id = Ticket._next_ticket_id
-        Ticket._next_ticket_id += 1
+    def __init__(self, reservation, ticket_id=None):
+        """
+        Initialize a Ticket.
+        
+        Args:
+            reservation: Reservation object this ticket belongs to
+            ticket_id: Numerical ticket ID (from database if provided)
+        """
+        self.ticket_id = ticket_id  # Will be set by database
         self.reservation = reservation
         
     def get_ticket_info(self):

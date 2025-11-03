@@ -5,6 +5,12 @@ from .TrainConnection import TrainConnection
 
 class RailwayNetwork:
     MIN_TRANSFER = timedelta(minutes=15)
+    # Layover policy: After hours = 10 PM to 6 AM
+    AFTER_HOURS_START = 22  # 10 PM
+    AFTER_HOURS_END = 6     # 6 AM
+    MAX_LAYOVER_DAYTIME = timedelta(hours=2)  # 1-2 hours OK during day
+    MAX_LAYOVER_AFTER_HOURS = timedelta(minutes=30)  # Max 30 min after hours
+    
     def __init__(self):
         self.connections = []
 
@@ -31,25 +37,89 @@ class RailwayNetwork:
             dt = dt.replace(year=1900, month=1, day=1)
 
         return dt
+    
+    def _is_after_hours(self, dt):
+        """Check if a datetime is during after hours (10 PM - 6 AM)"""
+        hour = dt.hour
+        return hour >= self.AFTER_HOURS_START or hour < self.AFTER_HOURS_END
+    
+    def _is_layover_acceptable(self, arrival_time, departure_time):
+        """
+        Check if layover duration is acceptable based on policy.
+        
+        Policy:
+        - During day (6 AM - 10 PM): Layover of 1-2 hours is OK
+        - After hours (10 PM - 6 AM): Max layover is 30 minutes
+        
+        Args:
+            arrival_time: datetime when first train arrives
+            departure_time: datetime when second train departs
+            
+        Returns:
+            True if layover is acceptable, False otherwise
+        """
+        layover_duration = departure_time - arrival_time
+        
+        # Must meet minimum transfer time
+        if layover_duration < self.MIN_TRANSFER:
+            return False
+        
+        # Check if arrival is during after hours
+        if self._is_after_hours(arrival_time):
+            # After hours: max 30 minutes
+            return layover_duration <= self.MAX_LAYOVER_AFTER_HOURS
+        else:
+            # Daytime: up to 2 hours OK
+            return layover_duration <= self.MAX_LAYOVER_DAYTIME
 
 
 
 
-    def load_from_csv(self, filepath):
-        #load from csv and clear any garbage data with incomplete rows
+    def load_from_csv(self, filepath, db_manager=None):
+        """
+        Load routes from CSV file and persist to database.
+        If routes already exist in database, load from database instead.
+        
+        Args:
+            filepath: Path to CSV file
+            db_manager: DatabaseManager instance for persistence
+        """
+        # If database manager provided, check if routes already exist
+        if db_manager:
+            db_routes = db_manager.load_all_routes()
+            if db_routes:
+                # Load from database
+                self.connections = []
+                for route_data in db_routes:
+                    connection = TrainConnection(
+                        route_id=route_data['route_id'],
+                        departure_city=route_data['departure_city'],
+                        arrival_city=route_data['arrival_city'],
+                        departure_time=route_data['departure_time'],
+                        arrival_time=route_data['arrival_time'],
+                        train_type=route_data['train_type'],
+                        days_of_operation=route_data['days_of_operation'],
+                        first_class_rate=route_data['first_class_rate'],
+                        second_class_rate=route_data['second_class_rate']
+                    )
+                    self.connections.append(connection)
+                return
+        
+        # Load from CSV and persist to database
         try:
             df = pd.read_csv(filepath)
         except Exception as e:
             print(f"Error loading CSV: {e}")
             return
         
-        df =df.dropna() #removes rows with missing vlaues
+        df = df.dropna()  # removes rows with missing values
 
         # Create TrainConnection objects and add to connections list
         for _, row in df.iterrows():
             try:
+                route_id = row['Route ID']
                 connection = TrainConnection(
-                    route_id=row['Route ID'],
+                    route_id=route_id,
                     departure_city=row['Departure City'],
                     arrival_city=row['Arrival City'],
                     departure_time=row['Departure Time'],
@@ -60,6 +130,22 @@ class RailwayNetwork:
                     second_class_rate=row['Second Class ticket rate (in euro)']
                 )
                 self.connections.append(connection)
+                
+                # Persist to database if manager provided
+                if db_manager:
+                    route_data = {
+                        'route_id': route_id,
+                        'departure_city': row['Departure City'],
+                        'arrival_city': row['Arrival City'],
+                        'departure_time': row['Departure Time'],
+                        'arrival_time': row['Arrival Time'],
+                        'train_type': row['Train Type'],
+                        'days_of_operation': row['Days of Operation'],
+                        'first_class_rate': float(row['First Class ticket rate (in euro)']),
+                        'second_class_rate': float(row['Second Class ticket rate (in euro)'])
+                    }
+                    db_manager.insert_route(route_data)
+                    
             except Exception as e:
                 print(f"Skipping row due to error: {e}")
         
@@ -113,10 +199,11 @@ class RailwayNetwork:
                     continue
                 
                 if c1.arrival_city.lower() == c2.departure_city.lower():
-                    # Only include if second train departs after first train arrives + transfer time
+                    # Check layover policy: ensure acceptable layover duration
                     dt_c2_departure = self._get_datetime(c2.departure_time, dt_c1_arrival)
                     dt_c2_arrival = self._get_datetime(c2.arrival_time, dt_c2_departure)
-                    if dt_c2_departure >= dt_c1_arrival + self.MIN_TRANSFER:
+                    # Apply layover policy check
+                    if self._is_layover_acceptable(dt_c1_arrival, dt_c2_departure):
                         total_duration = dt_c2_arrival - dt_c1_departure
                         one_stop.append({
                             'stops': 1,
@@ -139,8 +226,9 @@ class RailwayNetwork:
                 dt_c2_departure = self._get_datetime(c2.departure_time, dt_c1_arrival)
                 dt_c2_arrival = self._get_datetime(c2.arrival_time, dt_c2_departure)
 
-                if dt_c2_departure < dt_c1_arrival + self.MIN_TRANSFER:
-                    continue  # infeasible transfer
+                # Check first layover (c1 to c2)
+                if not self._is_layover_acceptable(dt_c1_arrival, dt_c2_departure):
+                    continue  # First layover doesn't meet policy
 
                 for c3 in self.connections:
                     if c3.departure_city.lower() != c2.arrival_city.lower():
@@ -149,8 +237,9 @@ class RailwayNetwork:
                         continue
                     dt_c3_departure = self._get_datetime(c3.departure_time, dt_c2_arrival)
                     dt_c3_arrival = self._get_datetime(c3.arrival_time, dt_c3_departure)
-
-                    if dt_c3_departure >= dt_c2_arrival + self.MIN_TRANSFER:
+                    
+                    # Check second layover (c2 to c3)
+                    if self._is_layover_acceptable(dt_c2_arrival, dt_c3_departure):
                         total_duration = dt_c3_arrival - dt_c1_departure
                         two_stop.append({
                             'stops': 2,
