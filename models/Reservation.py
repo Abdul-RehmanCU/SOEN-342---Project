@@ -2,10 +2,11 @@ from .Ticket import Ticket
 
 class Reservation:
     
-    def __init__(self, client, connection):
+    def __init__(self, client, connection, reservation_id=None):
+        self.reservation_id = reservation_id  # ID from database
         self.client = client
         self.connection = connection
-        self.ticket = Ticket(self)
+        self.ticket = None  # Will be set after ticket is created
         
     def get_reservation_info(self):
         "Returns formatted reservation information"

@@ -1,22 +1,22 @@
 import string
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from .Reservation import Reservation
 
 class Trip:
     
-    def __init__(self, reservations=None):
-        self.trip_id = self._generate_trip_id()
-        self.reservations = reservations or []
-        self.booking_date = datetime.now()
+    def __init__(self, trip_id=None, reservations=None, booking_date=None):
+        """
+        Initialize a Trip.
         
-    def _generate_trip_id(self):
-        "Generates a unique alphanumeric trip ID (e.g., TR8K3M9L)"
-        letters = string.ascii_uppercase
-        digits = string.digits
-        # Generate 8-character ID starting with TR
-        id_chars = 'TR' + ''.join(random.choices(letters + digits, k=6))
-        return id_chars
+        Args:
+            trip_id: Numerical trip ID (should be provided from database)
+            reservations: List of Reservation objects
+            booking_date: datetime object for booking date
+        """
+        self.trip_id = trip_id  # Numerical ID (will be set by database)
+        self.reservations = reservations or []
+        self.booking_date = booking_date if booking_date else datetime.now()
     
     def add_reservation(self, reservation):
         "Adds a reservation to this trip"
@@ -37,14 +37,53 @@ class Trip:
         return [reservation.client.get_full_name() for reservation in self.reservations]
     
     def is_current_or_future(self):
-        "Checks if this trip is for today or a future date"
+        """
+        Checks if this trip is for today or a future date.
+        Compares the connection's departure time with today's date.
+        """
         connection = self.get_connection()
         if not connection:
             return False
         
-        # For simplicity, we'll consider all trips as current/future for now
-        # In a real system, you'd parse the departure date and compare with today
-        return True
+        # Get today's date at midnight
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        # Parse departure time to get a datetime for comparison
+        # For simplicity, we'll use the booking date's day and parse the time
+        try:
+            import re
+            
+            # Extract time from departure_time string
+            time_str = connection.departure_time
+            extra_days = 0
+            match = re.search(r"\(\+(\d+)d\)", time_str)
+            if match:
+                extra_days = int(match.group(1))
+                time_str = re.sub(r"\s*\(\+\d+d\)", "", time_str).strip()
+            
+            # Parse time
+            time_part = datetime.strptime(time_str, "%H:%M").time()
+            
+            # Use booking date as reference for the departure date
+            # Assume trip is on the booking date (or next day if booking is late)
+            departure_date = self.booking_date.replace(
+                hour=time_part.hour,
+                minute=time_part.minute,
+                second=0,
+                microsecond=0
+            )
+            
+            # Add extra days if specified
+            if extra_days > 0:
+                departure_date += timedelta(days=extra_days)
+            
+            # If departure time has passed today, it's in the past
+            # Otherwise it's current or future
+            return departure_date >= today
+            
+        except Exception:
+            # If parsing fails, assume it's current/future
+            return True
     
     def get_trip_summary(self):
         "Returns a summary of the trip information"
